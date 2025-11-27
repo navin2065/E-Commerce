@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/x-icon" href="/Images/Login/Round logo.png">
+    <title>Login - DveinMart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+    <link rel="stylesheet" href="/Styles/login.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="login-wrap">
+            <div class="login-box glass" id="card">
+
+                <div class="brand-header">
+                    <img src="/Images/Login/Login Logo.ico" class="logo" alt="logo">
+
+                    <div class="brand-text">
+                        <div class="brand-title">DveinMart</div>
+                        <div class="brand-sub">Luxury E-commerce</div>
+                    </div>
+                </div>
+
+                <h2>Login in to continue</h2>
+
+                <input id="email" class="input" type="text" placeholder="Email">
+                <input id="password" class="input" type="password" placeholder="Password">
+
+                <div id="error" class="error">Invalid Email or Password</div>
+
+                <button class="btn" id="loginBtn">Login</button>
+
+                <button class="autofill-btn" id="autofillBtn">Autofill Credentials</button>
+
+                <div class="small-row" style="margin-top:14px"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <audio id="errorSound">
+        <source src="/Sound/error.mp3">
+    </audio>
+
+    <audio id="successSound">
+        <source src="/Sound/login.mp3">
+    </audio>
+
+    <script>
+        /* SUPERUSER CREDENTIALS */
+        const SUPER_EMAIL = "dveininnovation@gmail.com";
+        const SUPER_PASS = "Dvein@123";
+
+        const emailEl = document.getElementById('email');
+        const passEl = document.getElementById('password');
+        const errorEl = document.getElementById('error');
+        const loginBtn = document.getElementById('loginBtn');
+        const autofillBtn = document.getElementById('autofillBtn');
+        const card = document.getElementById('card');
+
+        /* DUMMY updateCartCount for consistency (optional for login page) */
+        function updateCartCount() { /* Function left empty as cart count isn't needed here */ }
+
+        /* AUTOFILL FUNCTION */
+        autofillBtn.addEventListener("click", () => {
+            emailEl.value = SUPER_EMAIL;
+            passEl.value = SUPER_PASS;
+        });
+
+        /* follow-cursor tilt effect */
+        (function addTilt() {
+            const wrap = document.querySelector('.login-wrap');
+            wrap.addEventListener('mousemove', (e) => {
+                const rect = wrap.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                const rx = (y - 0.5) * 12;
+                const ry = (x - 0.5) * -12;
+                card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.01)`;
+            });
+            wrap.addEventListener('mouseleave', () =>
+                card.style.transform = 'translateZ(0) rotateX(0) rotateY(0) scale(1)'
+            );
+        })();
+
+        /* login logic */
+        loginBtn.addEventListener('click', () => {
+
+            const email = emailEl.value.trim();
+            const pass = passEl.value.trim();
+
+            /* ✔ CORRECT LOGIN */
+            if (email === SUPER_EMAIL && pass === SUPER_PASS) {
+                localStorage.setItem('superuser', email);
+                errorEl.style.display = 'none';
+
+                // 🎵 Play success login sound
+                document.getElementById("successSound").play();
+
+                // Delay redirect so sound plays properly
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 600);
+
+                return;
+            }
+
+            /* ❌ WRONG PASSWORD → SHOW ERROR + PLAY SOUND + SHAKE */
+            errorEl.style.display = 'block';
+
+            // Play error sound
+            document.getElementById("errorSound").play();
+
+            // Shake effect
+            card.animate([
+                { transform: card.style.transform + ' translateX(0px)' },
+                { transform: card.style.transform + ' translateX(-8px)' },
+                { transform: card.style.transform + ' translateX(8px)' },
+                { transform: card.style.transform + ' translateX(0px)' }
+            ], { duration: 350, easing: 'ease' });
+
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,276 @@
+/* GOOGLE FONT */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --accent: rgba(0, 255, 200, 0.9);
+  --muted: rgba(255, 255, 255, 0.8);
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0
+}
+
+html,
+body {
+  height: 100%
+}
+
+/* BACKGROUND */
+body {
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #050406, #2b2b36, #0b0f15);
+  background-size: 300% 300%;
+  animation: bgShift 12s infinite;
+  color: #fff;
+}
+
+@keyframes bgShift {
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
+}
+
+/* LOGIN WRAPPER */
+
+.login-wrap {
+  width: 380px;
+  margin: auto;
+  position: relative;
+  perspective: 900px;
+}
+
+.login-wrap::before,
+.login-wrap::after {
+  content: "";
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  filter: blur(60px);
+  opacity: 0.7;
+  z-index: 0;
+}
+
+.login-wrap::before {
+  left: 10%;
+  top: -10%;
+  background: radial-gradient(circle, rgba(0, 255, 200, 0.18), transparent 40%);
+}
+
+.login-wrap::after {
+  right: -10%;
+  bottom: -10%;
+  background: radial-gradient(circle, rgba(255, 120, 200, 0.1), transparent 40%);
+}
+
+/* LOGIN BOX */
+.login-box {
+  position: relative;
+  z-index: 10;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 28px;
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  transition: 0.12s;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  justify-content: flex-start;
+}
+
+/* Company title text */
+.brand-title {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+}
+
+/* Sub-title */
+.brand-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 2px;
+}
+
+/* COMPANY LOGO SMALL */
+.logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  animation: floatLogo 3s ease-in-out infinite;
+
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes floatLogo {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* HEADING */
+.login-box h2 {
+  text-align: center;
+  color: var(--muted);
+  font-size: 24px;
+  /* Fix missing font size */
+  margin-bottom: 10px;
+}
+
+/* INPUT FIELDS */
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  outline: none;
+  transition: .18s;
+}
+
+/* AUTOFILL BUTTON */
+.autofill-btn {
+  width: 50%;
+  padding: 10px;
+  margin-top: 20px;
+  margin-left: 80px;
+  border: none;
+  cursor: pointer;
+
+  background: rgba(0, 255, 200, 0.08);
+  color: #cafff5;
+
+  border-radius: 10px;
+  font-size: 14px;
+  transition: 0.2s;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0, 255, 200, 0.12);
+}
+
+.autofill-btn:hover {
+  background: rgba(0, 255, 200, 0.16);
+  transform: scale(1.03);
+}
+
+
+.input:focus {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 16px rgba(0, 255, 200, 0.12);
+}
+
+/* PLACEHOLDER */
+::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* LOGIN BUTTON */
+.btn {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(90deg, rgba(0, 255, 200, 0.13), rgba(120, 255, 200, 0.12));
+  color: #e9fff8;
+  box-shadow: 0 6px 20px rgba(0, 255, 200, 0.06);
+  transition: 0.15s;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(0, 255, 200, 0.12);
+}
+
+/* ERROR MESSAGE */
+.error {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 60, 80, 0.08);
+  border: 1px solid rgba(255, 80, 100, 0.08);
+  color: #ff9aa2;
+  font-size: 14px;
+  display: none;
+}
+
+/* ---------------- MOBILE RESPONSIVENESS ---------------- */
+@media (max-width: 480px) {
+
+  /* Reduce the overall maximum width of the login form */
+  .login-wrap {
+    width: 90%;
+    max-width: 340px;
+    /* Ensure no extreme tilting on touch devices */
+    perspective: none;
+    margin: 40px auto;
+  }
+
+  /* Reduce padding on the glass box */
+  .login-box {
+    padding: 24px 18px;
+  }
+
+  /* Autofill button adjustments */
+  .autofill-btn {
+    width: 100%;
+    /* Make it full width */
+    margin-left: 0;
+    /* Remove horizontal margin */
+    padding: 10px;
+    margin-top: 15px;
+    font-size: 13px;
+  }
+
+  /* Adjust blur effects and floating elements (if necessary, for performance) */
+  .login-wrap::before,
+  .login-wrap::after {
+    opacity: 0.5;
+    /* Slightly less intense */
+    filter: blur(40px);
+  }
+}

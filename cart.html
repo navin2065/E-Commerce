@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/Images/Login/Round logo.png" />
+    <title>Your Cart - DveinMart</title>
+    <link rel="stylesheet" href="/Styles/home.css" />
+    <link rel="stylesheet" href="/Styles/cart.css" />
+</head>
+
+<body>
+
+    <div class="top-header">
+        <div class="header-left">
+            <img src="/Images/Login/Login Logo.ico">
+            <div class="header-title">DveinMart</div>
+        </div>
+
+        <div class="header-right">
+            <button class="nav-btn" onclick="window.location='cart.html'" style="background: var(--accent); color: #000;">
+                🛒 Cart
+                <span id="cart-count" style="margin-left: 5px; background-color: var(--accent); color: #000; padding: 2px 7px; border-radius: 50%; font-weight: 600; font-size: 12px; display: none;">0</span>
+            </button>
+            <button class="nav-btn" onclick="window.location='login.html'">Login</button>
+        </div>
+    </div>
+
+    <div class="nav-menu">
+        <div class="nav-item" onclick="window.location='home.html'">Home</div>
+
+        <div class="nav-item dropdown">
+            Categories ▾
+            <div class="dropdown-menu">
+                <div onclick="window.location='products-furniture.html'">Furniture</div>
+                <div onclick="window.location='products-grocery.html'">Grocery</div>
+                <div onclick="window.location='products-clothes.html'">Fashion</div>
+                <div onclick="window.location='products-electronics.html'">Electronics</div>
+            </div>
+        </div>
+
+        <div class="nav-item" onclick="window.location='home.html#about-section'">About</div>
+        <div class="nav-item" onclick="window.location='home.html#support-section'">Support</div>
+    </div>
+
+    <div class="cart-container">
+        <h1>Your Shopping Cart</h1>
+
+        <div class="cart-content">
+            <div class="cart-items" id="cart-items-container">
+                <div class="empty-message" id="empty-cart-message" style="display:none;">
+                    Your cart is currently empty.
+                </div>
+            </div>
+
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-line">
+                    <span>Subtotal:</span>
+                    <span class="subtotal-amount" id="subtotal-amount">₹ 0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Shipping:</span>
+                    <span class="shipping-fee" id="shipping-fee">₹ 0.00</span>
+                </div>
+                <div class="summary-line total">
+                    <span>Total (Incl. Tax):</span>
+                    <span class="total-amount" id="total-amount">₹ 0.00</span>
+                </div>
+
+                <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+                <button class="continue-shopping-btn" onclick="window.location='home.html'">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- CART COUNT FUNCTION DEFINITION ---
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const countElement = document.getElementById('cart-count');
+
+            if (countElement) {
+                const totalCount = cart.reduce((total, item) => total + item.quantity, 0);
+
+                if (totalCount > 0) {
+                    countElement.textContent = totalCount;
+                    countElement.style.display = 'inline';
+                } else {
+                    countElement.textContent = '0';
+                    countElement.style.display = 'none';
+                }
+            }
+        }
+
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const emptyMessage = document.getElementById('empty-cart-message');
+        const subtotalElement = document.getElementById('subtotal-amount');
+        const shippingElement = document.getElementById('shipping-fee');
+        const totalElement = document.getElementById('total-amount');
+        const checkoutButton = document.getElementById('checkout-btn');
+        
+        // --- 1. CALCULATIONS AND DISPLAY ---
+        function updateCartDisplay() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cartItemsContainer.innerHTML = '';
+            let subtotal = 0;
+            const SHIPPING_FEE = 500; // Example fixed shipping fee
+
+            if (cart.length === 0) {
+                emptyMessage.style.display = 'block';
+                checkoutButton.disabled = true;
+                checkoutButton.style.opacity = 0.5;
+            } else {
+                emptyMessage.style.display = 'none';
+                checkoutButton.disabled = false;
+                checkoutButton.style.opacity = 1;
+
+                cart.forEach((item, index) => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+
+                    const itemCard = document.createElement('div');
+                    itemCard.className = 'cart-item-card';
+                    itemCard.innerHTML = `
+                        <img src="${item.img || '/Images/Home/placeholder.jpg'}" alt="${item.name}">
+                        <div class="item-details">
+                            <h3>${item.name}</h3>
+                            <p class="item-price">₹ ${itemTotal.toFixed(2).toLocaleString('en-IN')}</p>
+                            <div class="item-controls">
+                                <label for="qty-${index}">Quantity:</label>
+                                <input type="number" id="qty-${index}" value="${item.quantity}" min="1" 
+                                    onchange="updateQuantity('${item.name}', this.value)">
+                                <button class="remove-btn" onclick="removeItem('${item.name}')">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemCard);
+                });
+            }
+
+            // Update Summary
+            const finalShipping = cart.length > 0 ? SHIPPING_FEE : 0;
+            const total = subtotal + finalShipping;
+
+            subtotalElement.textContent = `₹ ${subtotal.toFixed(2).toLocaleString('en-IN')}`;
+            shippingElement.textContent = `₹ ${finalShipping.toFixed(2).toLocaleString('en-IN')}`;
+            totalElement.textContent = `₹ ${total.toFixed(2).toLocaleString('en-IN')}`;
+            
+            updateCartCount(); // Update cart counter after display refresh
+        }
+        
+        // --- 2. REMOVE FUNCTION ---
+        function removeItem(name) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart = cart.filter(item => item.name !== name); 
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay(); 
+        }
+
+        // --- 3. QUANTITY UPDATE FUNCTION ---
+        function updateQuantity(name, newQuantity) {
+            const quantity = parseInt(newQuantity);
+            if (isNaN(quantity) || quantity < 1) return; 
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const itemIndex = cart.findIndex(item => item.name === name);
+
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity = quantity;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartDisplay(); 
+            }
+        }
+
+        // --- 4. CHECKOUT NAVIGATION FIX ---
+        checkoutButton.addEventListener('click', () => {
+            window.location.href = 'checkout.html'; 
+        });
+
+
+        // 5. INITIAL CALL: Initialize the cart view when the page loads
+        updateCartDisplay();
+    </script>
+
+</body>
+
+</html>

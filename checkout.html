@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/Images/Login/Round logo.png" />
+    <title>Checkout - DveinMart</title>
+    <link rel="stylesheet" href="/Styles/home.css" />
+    <link rel="stylesheet" href="/Styles/checkout.css" />
+</head>
+
+<body>
+
+    <div class="top-header">
+        <div class="header-left">
+            <img src="/Images/Login/Login Logo.ico">
+            <div class="header-title">DveinMart</div>
+        </div>
+
+        <div class="header-right">
+            <button class="nav-btn" onclick="window.location='cart.html'">
+                🛒 Cart
+                <span id="cart-count" style="margin-left: 5px; background-color: var(--accent); color: #000; padding: 2px 7px; border-radius: 50%; font-weight: 600; font-size: 12px; display: none;">0</span>
+            </button>
+            <button class="nav-btn" onclick="window.location='login.html'">Login</button>
+        </div>
+    </div>
+
+    <div class="nav-menu">
+        <div class="nav-item" onclick="window.location='home.html'">Home</div>
+
+        <div class="nav-item dropdown">
+            Categories ▾
+            <div class="dropdown-menu">
+                <div onclick="window.location='products-furniture.html'">Furniture</div>
+                <div onclick="window.location='products-grocery.html'">Grocery</div>
+                <div onclick="window.location='products-clothes.html'">Fashion</div>
+                <div onclick="window.location='products-electronics.html'">Electronics</div>
+            </div>
+        </div>
+
+        <div class="nav-item" onclick="window.location='home.html#about-section'">About</div>
+        <div class="nav-item" onclick="window.location='home.html#support-section'">Support</div>
+    </div>
+
+    <div id="main-checkout-content" class="checkout-container">
+        <h1>Secure Checkout</h1>
+
+        <div class="checkout-content">
+
+            <div class="checkout-form-section">
+                
+                <div class="form-card">
+                    <h2>1. Shipping Address</h2>
+                    <form id="shipping-form">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address Line 1</label>
+                            <input type="text" id="address" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" required>
+                        </div>
+                        <div class="form-group group-row">
+                            <div class="input-half">
+                                <label for="state">State / Province</label>
+                                <input type="text" id="state" required>
+                            </div>
+                            <div class="input-half">
+                                <label for="zip">Zip / Pincode</label>
+                                <input type="text" id="zip" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="form-card">
+                    <h2>2. Payment Method</h2>
+                    
+                    <div class="payment-options">
+                        <div class="payment-option">
+                            <input type="radio" id="credit-card" name="payment-method" value="card" checked>
+                            <label for="credit-card">Credit/Debit Card</label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="cod" name="payment-method" value="cod">
+                            <label for="cod">Cash on Delivery (COD)</label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="upi" name="payment-method" value="upi">
+                            <label for="upi">UPI/Net Banking</label>
+                        </div>
+                    </div>
+
+                    <div id="card-details" class="card-details-fields">
+                        <div class="form-group">
+                            <label for="card-number">Card Number</label>
+                            <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX">
+                        </div>
+                        <div class="form-group group-row">
+                            <div class="input-half">
+                                <label for="expiry">Expiry Date</label>
+                                <input type="text" id="expiry" placeholder="MM/YY">
+                            </div>
+                            <div class="input-half">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" placeholder="XXX">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="place-order-wrapper">
+                    <button class="place-order-btn" onclick="placeOrder(event)">Place Order</button>
+                </div>
+
+            </div>
+
+            <div class="order-summary-section">
+                <div class="summary-card">
+                    <h2>Order Summary</h2>
+                    
+                    <div id="checkout-summary-items">
+                        <p style="text-align: center; color: rgba(255, 255, 255, 0.5);">Loading items...</p>
+                    </div>
+                    
+                    <hr>
+
+                    <div class="summary-line">
+                        <span>Subtotal:</span>
+                        <span class="subtotal-amount" id="checkout-subtotal">₹ 0.00</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Shipping:</span>
+                        <span class="shipping-fee" id="checkout-shipping">₹ 0.00</span>
+                    </div>
+                    <div class="summary-line total">
+                        <span>Total Payable:</span>
+                        <span class="total-amount" id="checkout-total">₹ 0.00</span>
+                    </div>
+                    
+                </div>
+                <div class="return-link">
+                    <a href="cart.html">← Return to Cart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- CART COUNT FUNCTION DEFINITION ---
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const countElement = document.getElementById('cart-count');
+
+            if (countElement) {
+                const totalCount = cart.reduce((total, item) => total + item.quantity, 0);
+
+                if (totalCount > 0) {
+                    countElement.textContent = totalCount;
+                    countElement.style.display = 'inline';
+                } else {
+                    countElement.textContent = '0';
+                    countElement.style.display = 'none';
+                }
+            }
+        }
+        
+        const SUMMARY_ITEMS_CONTAINER = document.getElementById('checkout-summary-items');
+        const SUB_TOTAL_ELEMENT = document.getElementById('checkout-subtotal');
+        const SHIPPING_ELEMENT = document.getElementById('checkout-shipping');
+        const TOTAL_ELEMENT = document.getElementById('checkout-total');
+        const SHIPPING_FEE = 500.00; // Define shipping fee here
+
+        // Fetches and displays cart data on the Checkout page
+        function loadCheckoutSummary() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            SUMMARY_ITEMS_CONTAINER.innerHTML = '';
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                SUMMARY_ITEMS_CONTAINER.innerHTML = `<p style="text-align: center; color: #ff5555;">Your cart is empty. Please return to cart.</p>`;
+            } else {
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    
+                    // Display individual item
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'summary-item';
+                    itemDiv.innerHTML = `
+                        <span>${item.name} (x${item.quantity})</span>
+                        <span>₹ ${itemTotal.toFixed(2).toLocaleString('en-IN')}</span>
+                    `;
+                    SUMMARY_ITEMS_CONTAINER.appendChild(itemDiv);
+                });
+            }
+
+            // Calculate final totals
+            const finalShipping = cart.length > 0 ? SHIPPING_FEE : 0.00;
+            const total = subtotal + finalShipping;
+
+            // Update summary fields
+            SUB_TOTAL_ELEMENT.textContent = `₹ ${subtotal.toFixed(2).toLocaleString('en-IN')}`;
+            SHIPPING_ELEMENT.textContent = `₹ ${finalShipping.toFixed(2).toLocaleString('en-IN')}`;
+            TOTAL_ELEMENT.textContent = `₹ ${total.toFixed(2).toLocaleString('en-IN')}`;
+        }
+
+
+        // Success HTML Template (UNCHANGED)
+        const successHTML = `
+            <div class="success-message-content" style="text-align: center; padding: 100px 20px;">
+                <h1 style="color: var(--accent); font-size: 48px; margin-bottom: 20px;">✅ Order Successful!</h1>
+                <p style="font-size: 20px; margin-bottom: 40px;">Thank thank you for your purchase from DveinMart. Your order is confirmed and will be processed shortly.</p>
+                
+                <div class="form-card" style="max-width: 500px; margin: 0 auto; padding: 30px;">
+                    <p style="font-weight: 600; color: var(--muted);">Order Confirmation ID: #DVM${Math.floor(Math.random() * 1000000)}</p>
+                    <p style="margin-top: 15px;">A confirmation email has been sent to your registered email address.</p>
+                </div>
+
+                <div style="margin-top: 50px;">
+                    <button class="continue-shopping-btn" onclick="window.location='home.html'" style="width: auto; padding: 15px 30px; font-size: 16px;">
+                        Start Shopping Again
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        function placeOrder(event) {
+            event.preventDefault(); // Prevent accidental form submission
+            
+            const form = document.getElementById('shipping-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return; 
+            }
+
+            // Clear the cart after a successful order (simulated)
+            localStorage.removeItem('cart');
+            
+            updateCartCount(); // Update cart count after clearing cart
+            
+            const mainContent = document.getElementById('main-checkout-content');
+            if (mainContent) {
+                mainContent.style.opacity = 0;
+                
+                setTimeout(() => {
+                    mainContent.innerHTML = successHTML;
+                    mainContent.classList.remove('checkout-container'); 
+                    mainContent.style.display = 'flex';
+                    mainContent.style.justifyContent = 'center';
+                    mainContent.style.alignItems = 'flex-start';
+                    mainContent.style.minHeight = '60vh'; 
+                    
+                    mainContent.style.opacity = 1;
+                }, 300);
+            }
+        }
+        
+        // PREVIOUS FUNCTIONALITY: Toggling Payment Details - UNCHANGED
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCheckoutSummary(); // Call the function when the page loads
+            updateCartCount(); // Initial cart count on load
+
+            const paymentRadios = document.querySelectorAll('input[name="payment-method"]');
+            const cardDetails = document.getElementById('card-details');
+
+            function toggleCardDetails() {
+                const selectedCard = document.querySelector('input[name="payment-method"]:checked').value;
+                if (selectedCard === 'card') {
+                    cardDetails.style.display = 'block';
+                } else {
+                    cardDetails.style.display = 'none';
+                }
+            }
+
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', toggleCardDetails);
+            });
+
+            toggleCardDetails();
+        });
+    </script>
+
+</body>
+
+</html>

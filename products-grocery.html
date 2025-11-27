@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>DveinMart - Grocery</title>
+  <link rel="icon" href="/Images/Login/Round logo.png">
+  <link rel="stylesheet" href="/Styles/products.css">
+</head>
+<body>
+  <div class="top-header">
+    <div class="header-left"><img src="/Images/Login/Login Logo.ico" alt="logo"><div class="header-title">DveinMart</div></div>
+    <div class="header-right">
+      <button class="nav-btn" onclick="window.location='cart.html'">
+          🛒 Cart
+          <span id="cart-count" style="margin-left: 5px; background-color: var(--accent); color: #000; padding: 2px 7px; border-radius: 50%; font-weight: 600; font-size: 12px; display: none;">0</span>
+      </button>
+      <button class="nav-btn" onclick="window.location='login.html'">Login</button>
+    </div>
+  </div>
+
+  <div class="nav-menu">
+    <div class="nav-item" onclick="window.location='home.html'">Home</div>
+    <div class="nav-item dropdown">Categories ▾
+      <div class="dropdown-menu">
+        <div onclick="window.location='products-furniture.html'">Furniture</div>
+        <div onclick="window.location='products-grocery.html'">Grocery</div>
+        <div onclick="window.location='products-clothes.html'">Fashion</div>
+        <div onclick="window.location='products-electronics.html'">Electronics</div>
+      </div>
+    </div>
+    <div class="nav-item" onclick="window.location='home.html#about-section'">About</div>
+    <div class="nav-item" onclick="window.location='home.html#support-section'">Support</div>
+  </div>
+
+  <h1 class="page-title">Grocery Collection</h1>
+
+  <div class="sub-category-list">
+    <div onclick="showCategory('Vegetables')">Vegetables</div>
+    <div onclick="showCategory('Fruits')">Fruits</div>
+    <div onclick="showCategory('Oils')">Oils</div>
+    <div onclick="showCategory('Rice')">Rice & Dals</div>
+  </div>
+
+  <div id="product-container"></div>
+
+<script>
+// 3. ADD CART COUNT FUNCTION DEFINITION
+function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const countElement = document.getElementById('cart-count');
+
+    if (countElement) {
+        const totalCount = cart.reduce((total, item) => total + item.quantity, 0);
+
+        if (totalCount > 0) {
+            countElement.textContent = totalCount;
+            countElement.style.display = 'inline';
+        } else {
+            countElement.textContent = '0';
+            countElement.style.display = 'none';
+        }
+    }
+}
+
+const data = {
+  Vegetables: [1,2,3,4].map(i=>({name:`Vegetable ${i}`, price:30+i, img:`/Images/Products/Grocery/Vegetables/veg${i}.jpeg`})),
+  Fruits: [1,2,3,4].map(i=>({name:`Fruit ${i}`, price:50+i*5, img:`/Images/Products/Grocery/Fruits/fruit${i}.jpeg`})),
+  Oils: [1,2,3,4].map(i=>({name:`Oil ${i}`, price:120+i*10, img:`/Images/Products/Grocery/Oils/oil${i}.jpeg`})),
+  Rice: [1,2,3,4].map(i=>({name:`Rice ${i}`, price:200+i*20, img:`/Images/Products/Grocery/Rice/rice${i}.jpeg`})),
+  
+};
+
+function showCategory(cat){
+  const list = data[cat] || [];
+  let html = `<h2 class="sub-title">${cat}</h2><div class="product-grid">`;
+  list.forEach(it=> html += `<div class="product-card"><img src="${it.img}" alt><h3>${it.name}</h3><p>₹${it.price}</p><button onclick="addToCart('${escape(it.name)}',${it.price},'${it.img}')">+ Add</button></div>`);
+  html += `</div>`;
+  document.getElementById('product-container').innerHTML = html;
+}
+showCategory('Vegetables');
+
+function addToCart(name, price, img){
+  name = unescape(name);
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const idx = cart.findIndex(i=>i.name===name);
+  if(idx>=0) cart[idx].quantity += 1; else cart.push({name, price, img, quantity:1});
+  localStorage.setItem('cart', JSON.stringify(cart));
+  
+  // 4. CALL: Update cart counter after adding item
+  updateCartCount();
+}
+// SCROLL FUNCTIONS ARE NOT NEEDED HERE DUE TO HTML LINK FIX
+function scrollToAbout(){ /* Logic handled by HTML link to home.html */ }
+function scrollToSupport(){ /* Logic handled by HTML link to home.html */ }
+
+// 5. CALL: Load cart count on page load
+updateCartCount();
+</script>
+</body>
+</html>
