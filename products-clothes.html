@@ -4,19 +4,21 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>DveinMart - Fashion</title>
-    <link rel="icon" href="/Images/Login/Round logo.png">
-    <link rel="stylesheet" href="/Styles/products.css">
+    <link rel="icon" href="./Images/Login/Round logo.png">
+    <link rel="stylesheet" href="./Styles/products.css">
 </head>
 
 <body>
     <div class="top-header">
-        <div class="header-left"><img src="/Images/Login/Login Logo.ico" alt=""><div class="header-title">DveinMart</div></div>
+        <div class="header-left">
+            <img src="./Images/Login/Login Logo.ico" alt=""><div class="header-title">DveinMart</div>
+        </div>
         <div class="header-right">
             <button class="nav-btn" onclick="window.location='cart.html'">
                 🛒 Cart
                 <span id="cart-count" style="margin-left: 5px; background-color: var(--accent); color: #000; padding: 2px 7px; border-radius: 50%; font-weight: 600; font-size: 12px; display: none;">0</span>
             </button>
-            <button class="nav-btn" onclick="window.location='login.html'">Login</button>
+                <button class="nav-btn" onclick="window.location='index.html'">Login</button>
         </div>
     </div>
 
@@ -47,7 +49,7 @@
     <div id="product-container"></div>
 
     <script>
-        // 🎯 NEW FUNCTION: Updates the Cart Count in the Header
+        // 🎯 NEW FUNCTION: Updates the Cart Count in the Header (Functionality remains UNCHANGED)
         function updateCartCount() {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             const countElement = document.getElementById('cart-count');
@@ -65,12 +67,13 @@
             }
         }
         
+        // PATH CHANGES applied within data object literals below:
         const data = {
-            Women: [1,2,3,4].map(i=>({name:`Women Dress ${i}`, price:999+i*50, img:`/Images/Products/Fashion/Women/women${i}.jpeg`})),
-            Men: [1,2,3,4].map(i=>({name:`Men Dress ${i}`, price:799+i*40, img:`/Images/Products/Fashion/Men/men${i}.jpeg`})),
-            Kids: [1,2,3,4].map(i=>({name:`Kids Item ${i}`, price:399+i*20, img:`/Images/Products/Fashion/Kids/kids${i}.jpeg`})),
-            Shoes: [1,2,3,4].map(i=>({name:`Shoes ${i}`, price:1299+i*50, img:`/Images/Products/Fashion/Shoes/shoes${i}.jpeg`})),
-            Accessories: [1,2,3,4].map(i=>({name:`Accessory ${i}`, price:199+i*30, img:`/Images/Products/Fashion/Accessories/acc${i}.jpeg`}))
+            Women: [1,2,3,4].map(i=>({name:`Women Dress ${i}`, price:999+i*50, img:`./Images/Products/Fashion/Women/women${i}.jpeg`})),
+            Men: [1,2,3,4].map(i=>({name:`Men Dress ${i}`, price:799+i*40, img:`./Images/Products/Fashion/Men/men${i}.jpeg`})),
+            Kids: [1,2,3,4].map(i=>({name:`Kids Item ${i}`, price:399+i*20, img:`./Images/Products/Fashion/Kids/kids${i}.jpeg`})),
+            Shoes: [1,2,3,4].map(i=>({name:`Shoes ${i}`, price:1299+i*50, img:`./Images/Products/Fashion/Shoes/shoes${i}.jpeg`})),
+            Accessories: [1,2,3,4].map(i=>({name:`Accessory ${i}`, price:199+i*30, img:`./Images/Products/Fashion/Accessories/acc${i}.jpeg`}))
         };
 
         function showCategory(cat){
